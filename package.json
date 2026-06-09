@@ -1,0 +1,36 @@
+{
+  "name": "yourazz-license-bot",
+  "version": "1.0.0",
+  "description": "Yourazz License Manager — Discord bot for automated seller license management",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "deploy": "tsx src/deploy-commands.ts",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "lint": "eslint src --ext .ts",
+    "webhook": "tsx src/webhook/server.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.2.0",
+    "cron": "^3.1.7",
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
+    "stripe": "^17.5.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "prisma": "^6.2.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

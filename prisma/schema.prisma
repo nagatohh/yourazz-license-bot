@@ -1,0 +1,193 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["licenses"]
+}
+
+enum LicenseStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  CANCELLED
+
+  @@schema("licenses")
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+
+  @@schema("licenses")
+}
+
+enum KeyStatus {
+  AVAILABLE
+  REDEEMED
+  EXPIRED
+  BLACKLISTED
+
+  @@schema("licenses")
+}
+
+enum LogLevel {
+  INFO
+  WARN
+  ERROR
+  DEBUG
+
+  @@schema("licenses")
+}
+
+model DiscordUser {
+  id         String   @id @default(cuid())
+  discordId  String   @unique
+  username   String
+  globalName String?
+  avatarUrl  String?
+  language   String   @default("fr")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  licenses     License[]
+  payments     Payment[]
+  redeemedKeys LicenseKey[] @relation("RedeemedBy")
+  auditLogs    AuditLog[]   @relation("Actor")
+  targetLogs   AuditLog[]   @relation("Target")
+
+  @@schema("licenses")
+}
+
+model LicensePlan {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  displayName   String
+  price         Int
+  currency      String   @default("EUR")
+  durationDays  Int      @default(30)
+  maxProducts   Int      @default(1)
+  roleId        String
+  stripePriceId String?
+  features      String[]
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  licenses License[]
+  keys     LicenseKey[]
+
+  @@schema("licenses")
+}
+
+model License {
+  id                   String        @id @default(cuid())
+  userId               String
+  guildId              String
+  planId               String
+  status               LicenseStatus @default(ACTIVE)
+  startedAt            DateTime      @default(now())
+  expiresAt            DateTime
+  renewedAt            DateTime?
+  suspendedAt          DateTime?
+  suspensionReason     String?
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  user     DiscordUser @relation(fields: [userId], references: [id])
+  plan     LicensePlan @relation(fields: [planId], references: [id])
+  payments Payment[]
+
+  @@index([userId])
+  @@index([guildId])
+  @@index([status])
+  @@index([expiresAt])
+  @@schema("licenses")
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  userId                String
+  licenseId             String?
+  stripeSessionId       String?       @unique
+  stripePaymentIntentId String?       @unique
+  amount                Int
+  currency              String        @default("EUR")
+  status                PaymentStatus @default(PENDING)
+  plan                  String
+  createdAt             DateTime      @default(now())
+
+  user    DiscordUser @relation(fields: [userId], references: [id])
+  license License?    @relation(fields: [licenseId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@schema("licenses")
+}
+
+model LicenseKey {
+  id           String    @id @default(cuid())
+  key          String    @unique
+  planId       String
+  status       KeyStatus @default(AVAILABLE)
+  durationDays Int       @default(30)
+  redeemedById String?
+  redeemedAt   DateTime?
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+
+  plan       LicensePlan  @relation(fields: [planId], references: [id])
+  redeemedBy DiscordUser? @relation("RedeemedBy", fields: [redeemedById], references: [id])
+
+  @@index([key])
+  @@index([status])
+  @@schema("licenses")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  targetId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  actor  DiscordUser? @relation("Actor", fields: [actorId], references: [id])
+  target DiscordUser? @relation("Target", fields: [targetId], references: [id])
+
+  @@index([action])
+  @@index([createdAt])
+  @@schema("licenses")
+}
+
+model StripeWebhookEvent {
+  id            String   @id @default(cuid())
+  stripeEventId String   @unique
+  type          String
+  processed     Boolean  @default(false)
+  payload       Json?
+  createdAt     DateTime @default(now())
+
+  @@index([stripeEventId])
+  @@schema("licenses")
+}
+
+model BotLog {
+  id        String   @id @default(cuid())
+  level     LogLevel @default(INFO)
+  source    String
+  message   String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([level])
+  @@index([createdAt])
+  @@schema("licenses")
+}
