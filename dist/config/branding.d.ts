@@ -1,0 +1,55 @@
+export declare const BRANDING: {
+    name: string;
+    logoUrl: string;
+    bannerUrl: string;
+    successBannerUrl: string;
+    paymentBannerUrl: string;
+    helpBannerUrl: string;
+    dashboardBannerUrl: string;
+    serverName: string;
+    supportUrl: string;
+    websiteUrl: string;
+    footer: string;
+    author: string;
+};
+export declare const THEME: {
+    primary: number;
+    primaryDark: number;
+    success: number;
+    warning: number;
+    error: number;
+    info: number;
+    dark: number;
+    grey: number;
+    white: number;
+};
+export declare const EMOJI: {
+    check: string;
+    cross: string;
+    warning: string;
+    fire: string;
+    star: string;
+    diamond: string;
+    rocket: string;
+    crown: string;
+    shield: string;
+    lock: string;
+    card: string;
+    globe: string;
+    chart: string;
+    help: string;
+    mail: string;
+    clock: string;
+    calendar: string;
+    bolt: string;
+    heart: string;
+    sparkle: string;
+    trophy: string;
+    tag: string;
+    greenCircle: string;
+    yellowCircle: string;
+    redCircle: string;
+    arrowRight: string;
+    separator: string;
+};
+//# sourceMappingURL=branding.d.ts.map

@@ -1,0 +1,58 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EMOJI = exports.THEME = exports.BRANDING = void 0;
+exports.BRANDING = {
+    name: "Yourazz License Manager",
+    logoUrl: "https://cdn.discordapp.com/attachments/1508942035846168769/1508954801180905714/ChatGPT_Image_26_mai_2026_23_59_33.png",
+    bannerUrl: "https://cdn.discordapp.com/attachments/1511856683511578625/1511864897322094693/ezgif-1dea55a171483f82.gif",
+    successBannerUrl: "https://cdn.discordapp.com/attachments/1513986663636926565/1514031542324822128/ezgif-1788cf30250428ae.gif?ex=6a29e341&is=6a2891c1&hm=9c47977ea705efe2fb84494313dea0952413f2f6653d2a723f6763772f037adc&",
+    paymentBannerUrl: "https://cdn.discordapp.com/attachments/1513986663636926565/1514031541775237323/ezgif-1e4d461d9c84572c.gif?ex=6a29e340&is=6a2891c0&hm=b1294cdb37af66a138e15aaa609f565c9fd2bb5462a4b620651117329b78604a&",
+    helpBannerUrl: "https://cdn.discordapp.com/attachments/1511856683511578625/1511862672105275422/ezgif-1c12f046daff9157.gif",
+    dashboardBannerUrl: "https://cdn.discordapp.com/attachments/1513986663636926565/1514031473903272068/ezgif-28ca24151de2ab3d.gif?ex=6a29e330&is=6a2891b0&hm=73effae94962af294dd4696d748c311b42494a4578221e24f189718748875812&",
+    serverName: "Yourazz",
+    supportUrl: "",
+    websiteUrl: "https://yourazz.xyz",
+    footer: "Powered by Yourazz",
+    author: "Yourazz License Manager",
+};
+exports.THEME = {
+    primary: 0xdc2626,
+    primaryDark: 0x991b1b,
+    success: 0x22c55e,
+    warning: 0xf59e0b,
+    error: 0xef4444,
+    info: 0x3b82f6,
+    dark: 0x0a0a0a,
+    grey: 0x161616,
+    white: 0xffffff,
+};
+exports.EMOJI = {
+    check: "✅",
+    cross: "❌",
+    warning: "⚠️",
+    fire: "🔥",
+    star: "⭐",
+    diamond: "💎",
+    rocket: "🚀",
+    crown: "👑",
+    shield: "🛡️",
+    lock: "🔒",
+    card: "💳",
+    globe: "🌍",
+    chart: "📊",
+    help: "❓",
+    mail: "📩",
+    clock: "⏳",
+    calendar: "📅",
+    bolt: "⚡",
+    heart: "❤️",
+    sparkle: "✨",
+    trophy: "🏆",
+    tag: "🏷️",
+    greenCircle: "🟢",
+    yellowCircle: "🟡",
+    redCircle: "🔴",
+    arrowRight: "▸",
+    separator: "━━━━━━━━━━━━━━━━━━━━",
+};
+//# sourceMappingURL=branding.js.map
