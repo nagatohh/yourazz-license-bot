@@ -10,6 +10,7 @@ import { handleModal } from "../interactions/modals";
 import { handlePanelButton } from "../interactions/panel-buttons";
 import { handleConfirmPayment } from "../interactions/confirm-payment";
 import { handleLangSelect } from "../interactions/lang-select";
+import { handleTranslateButton } from "../interactions/translate-buttons";
 import { logger } from "../utils/logger";
 import { checkCooldown } from "../utils/rateLimit";
 import { buildReply, errorCard } from "../utils/cv2";
@@ -45,7 +46,7 @@ export function onInteraction(client: Client) {
         if (interaction.customId === "yrz_plan_select") {
           await handlePlanSelect(interaction);
         }
-        if (interaction.customId === "yrz_lang_select") {
+        if (interaction.customId === "yrz_lang_select" || interaction.customId === "select_language") {
           await handleLangSelect(interaction);
         }
         return;
@@ -61,6 +62,10 @@ export function onInteraction(client: Client) {
           });
         }
 
+        if (interaction.customId.startsWith("translate_")) {
+          await handleTranslateButton(interaction);
+          return;
+        }
         if (interaction.customId.startsWith("yrz_panel_")) {
           await handlePanelButton(interaction);
           return;

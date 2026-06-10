@@ -98,17 +98,18 @@ async function handleDashboard(interaction) {
     await interaction.editReply((0, cv2_1.buildReply)([container], [row]));
 }
 async function handleLanguage(interaction) {
-    const container = new discord_js_1.ContainerBuilder()
-        .setAccentColor(cv2_1.ACCENT.info)
-        .addTextDisplayComponents(new discord_js_1.TextDisplayBuilder().setContent(`## ${branding_1.EMOJI.globe} Choisir la langue`))
-        .addSeparatorComponents(new discord_js_1.SeparatorBuilder().setSpacing(discord_js_1.SeparatorSpacingSize.Small).setDivider(true))
-        .addTextDisplayComponents(new discord_js_1.TextDisplayBuilder().setContent("Sélectionnez votre langue préférée.\nTous les messages du bot seront traduits."));
     const select = new discord_js_1.StringSelectMenuBuilder()
         .setCustomId("yrz_lang_select")
         .setPlaceholder("Choisir / Choose / Elegir")
         .addOptions({ label: "Français", value: "fr", emoji: "🇫🇷", description: "Langue française" }, { label: "English", value: "en", emoji: "🇬🇧", description: "English language" }, { label: "Español", value: "es", emoji: "🇪🇸", description: "Idioma español" });
     const row = new discord_js_1.ActionRowBuilder().addComponents(select);
-    await interaction.reply({ ...(0, cv2_1.buildReply)([container], [row]), ephemeral: true });
+    const container = new discord_js_1.ContainerBuilder()
+        .setAccentColor(cv2_1.ACCENT.info)
+        .addTextDisplayComponents(new discord_js_1.TextDisplayBuilder().setContent(`## ${branding_1.EMOJI.globe} Choisir la langue`))
+        .addSeparatorComponents(new discord_js_1.SeparatorBuilder().setSpacing(discord_js_1.SeparatorSpacingSize.Small).setDivider(true))
+        .addTextDisplayComponents(new discord_js_1.TextDisplayBuilder().setContent("Sélectionnez votre langue préférée.\nTous les messages du bot seront traduits."))
+        .addActionRowComponents(row);
+    await interaction.reply({ ...(0, cv2_1.buildReply)([container]), ephemeral: true });
 }
 async function handleHelp(interaction) {
     const container = new discord_js_1.ContainerBuilder()

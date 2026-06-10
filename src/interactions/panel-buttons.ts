@@ -140,16 +140,6 @@ async function handleDashboard(interaction: ButtonInteraction) {
 }
 
 async function handleLanguage(interaction: ButtonInteraction) {
-  const container = new ContainerBuilder()
-    .setAccentColor(ACCENT.info)
-    .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${EMOJI.globe} Choisir la langue`))
-    .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
-    .addTextDisplayComponents(
-      new TextDisplayBuilder().setContent(
-        "Sélectionnez votre langue préférée.\nTous les messages du bot seront traduits.",
-      ),
-    );
-
   const select = new StringSelectMenuBuilder()
     .setCustomId("yrz_lang_select")
     .setPlaceholder("Choisir / Choose / Elegir")
@@ -160,7 +150,19 @@ async function handleLanguage(interaction: ButtonInteraction) {
     );
 
   const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-  await interaction.reply({ ...buildReply([container], [row as any]), ephemeral: true });
+
+  const container = new ContainerBuilder()
+    .setAccentColor(ACCENT.info)
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ${EMOJI.globe} Choisir la langue`))
+    .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
+    .addTextDisplayComponents(
+      new TextDisplayBuilder().setContent(
+        "Sélectionnez votre langue préférée.\nTous les messages du bot seront traduits.",
+      ),
+    )
+    .addActionRowComponents(row);
+
+  await interaction.reply({ ...buildReply([container]), ephemeral: true });
 }
 
 async function handleHelp(interaction: ButtonInteraction) {

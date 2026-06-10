@@ -45,6 +45,7 @@ const modals_1 = require("../interactions/modals");
 const panel_buttons_1 = require("../interactions/panel-buttons");
 const confirm_payment_1 = require("../interactions/confirm-payment");
 const lang_select_1 = require("../interactions/lang-select");
+const translate_buttons_1 = require("../interactions/translate-buttons");
 const logger_1 = require("../utils/logger");
 const rateLimit_1 = require("../utils/rateLimit");
 const cv2_1 = require("../utils/cv2");
@@ -76,7 +77,7 @@ function onInteraction(client) {
                 if (interaction.customId === "yrz_plan_select") {
                     await (0, plan_select_1.handlePlanSelect)(interaction);
                 }
-                if (interaction.customId === "yrz_lang_select") {
+                if (interaction.customId === "yrz_lang_select" || interaction.customId === "select_language") {
                     await (0, lang_select_1.handleLangSelect)(interaction);
                 }
                 return;
@@ -89,6 +90,10 @@ function onInteraction(client) {
                         ...(0, cv2_1.buildReply)([(0, cv2_1.errorCard)("Trop vite !", `Attends **${remaining}s** avant de réessayer.`)]),
                         ephemeral: true,
                     });
+                }
+                if (interaction.customId.startsWith("translate_")) {
+                    await (0, translate_buttons_1.handleTranslateButton)(interaction);
+                    return;
                 }
                 if (interaction.customId.startsWith("yrz_panel_")) {
                     await (0, panel_buttons_1.handlePanelButton)(interaction);
