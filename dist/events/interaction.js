@@ -39,6 +39,9 @@ const key = __importStar(require("../commands/key"));
 const admin = __importStar(require("../commands/admin"));
 const ia = __importStar(require("../commands/ia"));
 const panel = __importStar(require("../commands/panel"));
+const owner = __importStar(require("../commands/owner"));
+const ownerAdmin = __importStar(require("../commands/owner-admin"));
+const automation = __importStar(require("../commands/automation-admin"));
 const plan_select_1 = require("../interactions/plan-select");
 const buttons_1 = require("../interactions/buttons");
 const modals_1 = require("../interactions/modals");
@@ -46,6 +49,8 @@ const panel_buttons_1 = require("../interactions/panel-buttons");
 const confirm_payment_1 = require("../interactions/confirm-payment");
 const lang_select_1 = require("../interactions/lang-select");
 const translate_buttons_1 = require("../interactions/translate-buttons");
+const owner_buttons_1 = require("../interactions/owner-buttons");
+const owner_team_1 = require("../interactions/owner-team");
 const logger_1 = require("../utils/logger");
 const rateLimit_1 = require("../utils/rateLimit");
 const cv2_1 = require("../utils/cv2");
@@ -55,6 +60,9 @@ commands.set("key", key);
 commands.set("admin", admin);
 commands.set("ia", ia);
 commands.set("license-panel", panel);
+commands.set("owner", owner);
+commands.set("owner-admin", ownerAdmin);
+commands.set("automation", automation);
 function onInteraction(client) {
     client.on("interactionCreate", async (interaction) => {
         try {
@@ -80,6 +88,9 @@ function onInteraction(client) {
                 if (interaction.customId === "yrz_lang_select" || interaction.customId === "select_language") {
                     await (0, lang_select_1.handleLangSelect)(interaction);
                 }
+                if (interaction.customId === "yrz_owner_removeselect") {
+                    await (0, owner_team_1.handleRemoveMemberSelect)(interaction);
+                }
                 return;
             }
             if (interaction.isButton()) {
@@ -93,6 +104,10 @@ function onInteraction(client) {
                 }
                 if (interaction.customId.startsWith("translate_")) {
                     await (0, translate_buttons_1.handleTranslateButton)(interaction);
+                    return;
+                }
+                if (interaction.customId.startsWith("yrz_owner_")) {
+                    await (0, owner_buttons_1.handleOwnerButton)(interaction);
                     return;
                 }
                 if (interaction.customId.startsWith("yrz_panel_")) {

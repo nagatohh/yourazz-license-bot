@@ -49,4 +49,68 @@ export const fr: Record<string, string> = {
   // Errors
   "error.generic": "❌ Une erreur est survenue.",
   "error.noPermission": "❌ Vous n'avez pas la permission.",
+
+  // Owner Manager
+  "owner.accessDenied": "Accès refusé",
+  "owner.accessDeniedDesc": "Tu n'as pas le rôle Owner.\nContacte un admin pour être ajouté.",
+  "owner.footer": "-# 👑 Yourazz Owner Manager System",
+
+  // Owner Dashboard
+  "owner.dashboard.title": "## 📊 Dashboard — {username}",
+  "owner.dashboard.score": "**Score :** {score} pts",
+  "owner.dashboard.rank": "**Classement :** #{rank}",
+  "owner.dashboard.teamTitle": "### 👥 Équipe",
+  "owner.dashboard.teamStats": "Total : **{total}** • 🟢 Actifs : **{active}** • 🔴 Inactifs : **{inactive}**",
+  "owner.dashboard.monthlyTitle": "### 🎯 Objectif mensuel",
+  "owner.dashboard.nextTier": "**Prochain tier :** {emoji} {label} ({minRecruits} recrues actives)",
+  "owner.dashboard.maxTier": "🏆 **Tier maximum atteint !**",
+
+  // Owner Team
+  "owner.team.title": "## 👥 Mon Équipe ({count})",
+  "owner.team.empty": "Équipe vide",
+  "owner.team.emptyDesc": "Tu n'as encore recruté personne.\nDemande à un admin de t'assigner des recrues.",
+  "owner.team.stats": "🟢 **{active}** actifs • 🔴 **{inactive}** inactifs",
+  "owner.team.sales": "{count} ventes",
+
+  // Owner Leaderboard
+  "owner.leaderboard.title": "## 🏆 Classement Owners",
+  "owner.leaderboard.empty": "Aucun Owner",
+  "owner.leaderboard.emptyDesc": "Aucun Owner n'est encore enregistré.",
+  "owner.leaderboard.entry": "{medal} <@{discordId}> — **{score} pts** • {emoji} {tier} • {active} actifs",
+
+  // Owner Objectives
+  "owner.objectives.title": "## 🎯 Mes Objectifs",
+  "owner.objectives.monthly": "### 📅 Mensuels",
+  "owner.objectives.weekly": "### 📆 Hebdomadaires",
+  "owner.objectives.none": "Aucun objectif actif",
+  "owner.objectives.tipsTitle": "### 💡 Conseils",
+  "owner.objectives.tip1": "▸ Recrute des profils qui resteront actifs",
+  "owner.objectives.tip2": "▸ Accompagne tes recrues la première semaine",
+  "owner.objectives.tip3": "▸ Un membre retenu 30j = +100 pts bonus",
+
+  // Owner Rewards
+  "owner.rewards.title": "## 🎁 Récompenses Owner",
+  "owner.rewards.tierTitle": "### 🏅 Récompenses par Tier",
+  "owner.rewards.bronze": "🥉 **Bronze** (5 recrues actives)\n▸ Rôle exclusif Bronze Owner\n▸ Accès catégorie Owner",
+  "owner.rewards.silver": "🥈 **Silver** (15 recrues actives)\n▸ Salon privé Silver\n▸ Badge profil serveur",
+  "owner.rewards.gold": "🥇 **Gold** (30 recrues actives)\n▸ Accès anticipé aux features\n▸ Visibilité serveur\n▸ Mention dans les annonces",
+  "owner.rewards.diamond": "💎 **Diamond** (50 recrues actives)\n▸ Avantages exclusifs premium\n▸ Salon VIP Diamond\n▸ Priorité sur les décisions",
+  "owner.rewards.legend": "🏆 **Legend** (100 recrues actives)\n▸ Statut permanent Legend\n▸ Toutes les récompenses\n▸ Reconnaissance officielle Yourazz",
+
+  // Owner Help
+  "owner.help.title": "## ❓ Aide — Owner Manager",
+  "owner.help.howTitle": "### 🔑 Comment ça marche",
+  "owner.help.howDesc": "Tu es un **Owner** — un recruteur/manager Yourazz.\nTu recrutes des membres, tu les accompagnes, et tu gagnes des points selon leur activité.",
+  "owner.help.earnTitle": "### 📈 Comment gagner des points",
+  "owner.help.earnRecruit": "▸ Nouvelle recrue active → **+{pts}**",
+  "owner.help.earnActivity": "▸ Activité régulière équipe → **+{pts}**",
+  "owner.help.earnRetention": "▸ Rétention 30 jours → **+{pts}**",
+  "owner.help.earnSale": "▸ Vente d'un membre → **+{pts}**",
+  "owner.help.noPointsTitle": "### ❌ Ce qui ne rapporte rien",
+  "owner.help.noPointsDesc": "▸ Recrues inactives\n▸ Membres qui ne participent pas\n▸ Recrues qui partent rapidement",
+  "owner.help.costTitle": "### ⚠️ Ce qui coûte des points",
+  "owner.help.costSanction": "▸ Sanction d'un membre → **{pts}**",
+  "owner.help.costLeft": "▸ Membre qui quitte → **{pts}**",
+  "owner.help.commandsTitle": "### 📋 Commandes",
+  "owner.help.commandsList": "▸ `/owner dashboard` — Tableau de bord\n▸ `/owner team` — Équipe\n▸ `/owner stats` — Statistiques\n▸ `/owner recruits` — Recrutements récents",
 };

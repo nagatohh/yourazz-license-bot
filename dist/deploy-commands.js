@@ -40,6 +40,9 @@ const key = __importStar(require("./commands/key"));
 const admin = __importStar(require("./commands/admin"));
 const ia = __importStar(require("./commands/ia"));
 const panel = __importStar(require("./commands/panel"));
+const owner = __importStar(require("./commands/owner"));
+const ownerAdmin = __importStar(require("./commands/owner-admin"));
+const automation = __importStar(require("./commands/automation-admin"));
 const rest = new discord_js_1.REST({ version: "10" }).setToken(bot_1.env.DISCORD_TOKEN);
 const commands = [
     licence.data.toJSON(),
@@ -47,6 +50,9 @@ const commands = [
     admin.data.toJSON(),
     ia.data.toJSON(),
     panel.data.toJSON(),
+    owner.data.toJSON(),
+    ownerAdmin.data.toJSON(),
+    automation.data.toJSON(),
 ];
 (async () => {
     try {

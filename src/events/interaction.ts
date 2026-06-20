@@ -4,6 +4,9 @@ import * as key from "../commands/key";
 import * as admin from "../commands/admin";
 import * as ia from "../commands/ia";
 import * as panel from "../commands/panel";
+import * as owner from "../commands/owner";
+import * as ownerAdmin from "../commands/owner-admin";
+import * as automation from "../commands/automation-admin";
 import { handlePlanSelect } from "../interactions/plan-select";
 import { handleButton } from "../interactions/buttons";
 import { handleModal } from "../interactions/modals";
@@ -11,6 +14,8 @@ import { handlePanelButton } from "../interactions/panel-buttons";
 import { handleConfirmPayment } from "../interactions/confirm-payment";
 import { handleLangSelect } from "../interactions/lang-select";
 import { handleTranslateButton } from "../interactions/translate-buttons";
+import { handleOwnerButton } from "../interactions/owner-buttons";
+import { handleRemoveMemberSelect } from "../interactions/owner-team";
 import { logger } from "../utils/logger";
 import { checkCooldown } from "../utils/rateLimit";
 import { buildReply, errorCard } from "../utils/cv2";
@@ -21,6 +26,9 @@ commands.set("key", key);
 commands.set("admin", admin);
 commands.set("ia", ia);
 commands.set("license-panel", panel);
+commands.set("owner", owner);
+commands.set("owner-admin", ownerAdmin);
+commands.set("automation", automation);
 
 export function onInteraction(client: Client) {
   client.on("interactionCreate", async (interaction: Interaction) => {
@@ -49,6 +57,9 @@ export function onInteraction(client: Client) {
         if (interaction.customId === "yrz_lang_select" || interaction.customId === "select_language") {
           await handleLangSelect(interaction);
         }
+        if (interaction.customId === "yrz_owner_removeselect") {
+          await handleRemoveMemberSelect(interaction);
+        }
         return;
       }
 
@@ -64,6 +75,10 @@ export function onInteraction(client: Client) {
 
         if (interaction.customId.startsWith("translate_")) {
           await handleTranslateButton(interaction);
+          return;
+        }
+        if (interaction.customId.startsWith("yrz_owner_")) {
+          await handleOwnerButton(interaction);
           return;
         }
         if (interaction.customId.startsWith("yrz_panel_")) {

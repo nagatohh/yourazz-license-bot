@@ -3,10 +3,14 @@ import { KeyService } from "../modules/licenses/key.service";
 import { UserService } from "../modules/users/user.service";
 import { RoleService } from "../modules/admin/role.service";
 import { successCard, errorCard, buildReply } from "../utils/cv2";
+import { handleAddMemberModal } from "./owner-team";
 
 export async function handleModal(interaction: ModalSubmitInteraction) {
   if (interaction.customId === "yrz_redeem_modal") {
     return handleRedeemModal(interaction);
+  }
+  if (interaction.customId === "yrz_owner_addmember_modal") {
+    return handleAddMemberModal(interaction);
   }
 }
 

@@ -4,6 +4,7 @@ exports.handlePanelButton = handlePanelButton;
 const discord_js_1 = require("discord.js");
 const licenses_1 = require("../config/licenses");
 const branding_1 = require("../config/branding");
+const bot_1 = require("../config/bot");
 const stripe_service_1 = require("../modules/payments/stripe.service");
 const license_service_1 = require("../modules/licenses/license.service");
 const user_service_1 = require("../modules/users/user.service");
@@ -14,6 +15,8 @@ async function handlePanelButton(interaction) {
     const id = interaction.customId;
     if (id === "yrz_panel_payment")
         return handlePayment(interaction);
+    if (id === "yrz_panel_crypto")
+        return handleCrypto(interaction);
     if (id === "yrz_panel_dashboard")
         return handleDashboard(interaction);
     if (id === "yrz_panel_language")
@@ -65,6 +68,52 @@ async function handlePayment(interaction) {
         .setEmoji("✅")
         .setStyle(discord_js_1.ButtonStyle.Success);
     const row = new discord_js_1.ActionRowBuilder().addComponents(payBtn, confirmBtn);
+    await interaction.editReply((0, cv2_1.buildReply)([container], [row]));
+}
+async function handleCrypto(interaction) {
+    await interaction.deferReply({ ephemeral: true });
+    const wallets = [];
+    if (bot_1.env.CRYPTO_WALLET_LTC)
+        wallets.push(`**LTC :** \`${bot_1.env.CRYPTO_WALLET_LTC}\``);
+    if (bot_1.env.CRYPTO_WALLET_BTC)
+        wallets.push(`**BTC :** \`${bot_1.env.CRYPTO_WALLET_BTC}\``);
+    if (bot_1.env.CRYPTO_WALLET_ETH)
+        wallets.push(`**ETH :** \`${bot_1.env.CRYPTO_WALLET_ETH}\``);
+    if (wallets.length === 0) {
+        const container = new discord_js_1.ContainerBuilder()
+            .setAccentColor(cv2_1.ACCENT.warning)
+            .addTextDisplayComponents(new discord_js_1.TextDisplayBuilder().setContent(`## ₿ Paiement Crypto`))
+            .addSeparatorComponents(new discord_js_1.SeparatorBuilder().setSpacing(discord_js_1.SeparatorSpacingSize.Small).setDivider(true))
+            .addTextDisplayComponents(new discord_js_1.TextDisplayBuilder().setContent("Le paiement crypto n'est pas encore configuré.\nContactez un administrateur."));
+        return interaction.editReply((0, cv2_1.buildReply)([container]));
+    }
+    const container = new discord_js_1.ContainerBuilder()
+        .setAccentColor(cv2_1.ACCENT.primary)
+        .addTextDisplayComponents(new discord_js_1.TextDisplayBuilder().setContent(`## ₿ Paiement Crypto — Licence Vendeur`))
+        .addSeparatorComponents(new discord_js_1.SeparatorBuilder().setSpacing(discord_js_1.SeparatorSpacingSize.Small).setDivider(true))
+        .addTextDisplayComponents(new discord_js_1.TextDisplayBuilder().setContent(`${branding_1.EMOJI.fire} **Offre Vendeur** — 25€ (équivalent crypto)\n\n` +
+        `### 📋 Étapes :\n` +
+        `**1.** Envoyez l'équivalent de **25€** à l'une des adresses ci-dessous\n` +
+        `**2.** Envoyez une capture de la transaction à un admin\n` +
+        `**3.** Un admin vous fournira une **clé d'activation**\n` +
+        `**4.** Utilisez \`/key redeem <clé>\` ou le bouton 🔑 pour activer\n\n` +
+        `### 💰 Adresses wallet :\n` +
+        wallets.join("\n") +
+        `\n\n### ⚠️ Important :\n` +
+        `▸ Envoyez le montant **exact** en équivalent EUR\n` +
+        `▸ Conservez votre preuve de transaction\n` +
+        `▸ La clé sera fournie après vérification par un admin`))
+        .addSeparatorComponents(new discord_js_1.SeparatorBuilder().setSpacing(discord_js_1.SeparatorSpacingSize.Small).setDivider(true))
+        .addTextDisplayComponents(new discord_js_1.TextDisplayBuilder().setContent(`-# ${branding_1.BRANDING.footer}`));
+    const row = new discord_js_1.ActionRowBuilder().addComponents(new discord_js_1.ButtonBuilder()
+        .setCustomId("yrz_redeem_key")
+        .setLabel("Activer une clé")
+        .setEmoji("🔑")
+        .setStyle(discord_js_1.ButtonStyle.Success), new discord_js_1.ButtonBuilder()
+        .setCustomId("yrz_panel_support")
+        .setLabel("Contacter un admin")
+        .setEmoji("📩")
+        .setStyle(discord_js_1.ButtonStyle.Secondary));
     await interaction.editReply((0, cv2_1.buildReply)([container], [row]));
 }
 async function handleDashboard(interaction) {

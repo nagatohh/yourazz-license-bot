@@ -47,6 +47,11 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       .setEmoji("💳")
       .setStyle(ButtonStyle.Danger),
     new ButtonBuilder()
+      .setCustomId("yrz_panel_crypto")
+      .setLabel("Crypto")
+      .setEmoji("🪙")
+      .setStyle(ButtonStyle.Primary),
+    new ButtonBuilder()
       .setCustomId("yrz_panel_dashboard")
       .setLabel("Mon Dashboard")
       .setEmoji("📊")

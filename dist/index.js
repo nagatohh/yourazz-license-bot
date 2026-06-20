@@ -4,14 +4,23 @@ const discord_js_1 = require("discord.js");
 const bot_1 = require("./config/bot");
 const ready_1 = require("./events/ready");
 const interaction_1 = require("./events/interaction");
+const message_1 = require("./events/message");
 const database_1 = require("./services/database");
 const logger_1 = require("./utils/logger");
 const client = new discord_js_1.Client({
-    intents: [discord_js_1.GatewayIntentBits.Guilds],
-    partials: [discord_js_1.Partials.Channel],
+    // GuildMessages + MessageContent requis pour lire les embeds postés par le
+    // bot externe dans les salons logs (MESSAGE CONTENT = intent privilégié, à
+    // activer dans le Discord Developer Portal).
+    intents: [
+        discord_js_1.GatewayIntentBits.Guilds,
+        discord_js_1.GatewayIntentBits.GuildMessages,
+        discord_js_1.GatewayIntentBits.MessageContent,
+    ],
+    partials: [discord_js_1.Partials.Channel, discord_js_1.Partials.Message],
 });
 (0, ready_1.onReady)(client);
 (0, interaction_1.onInteraction)(client);
+(0, message_1.onMessage)(client);
 async function start() {
     try {
         await database_1.prisma.$connect();

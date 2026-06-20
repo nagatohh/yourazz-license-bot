@@ -12,6 +12,21 @@ export declare const env: {
     SELLER_BASIC_ROLE_ID: string;
     STAFF_LOG_CHANNEL_ID: string;
     LICENSE_LOG_CHANNEL_ID: string;
+    CRYPTO_WALLET_LTC: string;
+    CRYPTO_WALLET_BTC: string;
+    CRYPTO_WALLET_ETH: string;
+    VOUCH_CHANNEL_ID: string;
+    FEEDBACK_STAFF_CHANNEL_ID: string;
+    TICKET_LOG_CHANNEL_ID: string;
+    RANKS_CHANNEL_ID: string;
+    OBJECTIVES_CHANNEL_ID: string;
+    OWNER_LOG_CHANNEL_ID: string;
+    OWNER_ALERT_CHANNEL_ID: string;
+    OWNER_DASHBOARD_CHANNEL_ID: string;
+    LEADERBOARD_OWNER_CHANNEL_ID: string;
+    LEADERBOARD_TEAM_CHANNEL_ID: string;
+    LEADERBOARD_STAFF_CHANNEL_ID: string;
+    MANAGER_ROLE_ID: string;
     OPENAI_API_KEY?: string | undefined;
 };
 //# sourceMappingURL=bot.d.ts.map

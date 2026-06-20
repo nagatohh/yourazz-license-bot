@@ -1,1 +1,1 @@
-{"version":3,"file":"channels.d.ts","sourceRoot":"","sources":["../../src/config/channels.ts"],"names":[],"mappings":"AAEA,eAAO,MAAM,QAAQ;;;CAGpB,CAAC"}
+{"version":3,"file":"channels.d.ts","sourceRoot":"","sources":["../../src/config/channels.ts"],"names":[],"mappings":"AAEA,eAAO,MAAM,QAAQ;;;;;;;;;;;;;;CAkBpB,CAAC;AAEF,oDAAoD;AACpD,MAAM,MAAM,gBAAgB,GAAG,OAAO,GAAG,UAAU,GAAG,QAAQ,CAAC;AAE/D;;;;GAIG;AACH,eAAO,MAAM,gBAAgB,EAAE,MAAM,CAAC,MAAM,EAAE,gBAAgB,CAQ7D,CAAC;AAEF,iEAAiE;AACjE,wBAAgB,cAAc,CAAC,SAAS,EAAE,MAAM,GAAG,gBAAgB,GAAG,IAAI,CAEzE"}

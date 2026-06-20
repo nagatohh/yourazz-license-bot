@@ -19,5 +19,5 @@
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "src/run-owner-setup.ts", "src/find-owner-role.ts", "src/fix-permissions.ts", "src/add-owner.ts", "src/check-db.ts", "src/send-panel.ts", "src/apply-team-columns.ts"]
 }

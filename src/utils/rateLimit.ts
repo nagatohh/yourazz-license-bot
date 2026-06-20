@@ -9,6 +9,8 @@ const LIMITS: Record<string, number> = {
   "licence aide": 5,
   "key redeem": 15,
   "key status": 5,
+  "owner addmember": 5,
+  "owner removemember": 5,
   default: 3,
 };
 

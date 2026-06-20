@@ -191,3 +191,252 @@ model BotLog {
   @@index([createdAt])
   @@schema("licenses")
 }
+
+// ═══════════════════════════════════════
+// OWNER MANAGER SYSTEM
+// ═══════════════════════════════════════
+
+enum OwnerTier {
+  BRONZE
+  SILVER
+  GOLD
+  DIAMOND
+  LEGEND
+
+  @@schema("licenses")
+}
+
+enum TeamMemberStatus {
+  ACTIVE
+  INACTIVE
+  SANCTIONED
+  LEFT
+
+  @@schema("licenses")
+}
+
+enum GoalPeriod {
+  WEEKLY
+  MONTHLY
+
+  @@schema("licenses")
+}
+
+enum ScoreEventType {
+  RECRUIT_ACTIVE
+  MEMBER_REGULAR_ACTIVITY
+  MEMBER_RETAINED_30D
+  MEMBER_SALE
+  MEMBER_SANCTIONED
+  MEMBER_LEFT
+  MANUAL_ADJUST
+  // Automation Core (Phase 1+)
+  TEAM_VOUCH
+  GOOD_RATING
+  BAD_RATING
+  TICKET_HANDLED
+
+  @@schema("licenses")
+}
+
+model Owner {
+  id        String    @id @default(cuid())
+  discordId String    @unique
+  username  String
+  teamName  String?
+  tier      OwnerTier @default(BRONZE)
+  totalScore Int      @default(0)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  team        OwnerTeamMember[]
+  scoreEvents OwnerScoreEvent[]
+  goals       OwnerGoal[]
+  stats       OwnerStats?
+  alerts      OwnerAlert[]
+
+  @@schema("licenses")
+}
+
+model OwnerTeamMember {
+  id        String           @id @default(cuid())
+  ownerId   String
+  discordId String
+  username  String
+  status    TeamMemberStatus @default(ACTIVE)
+  note      String?
+  addedById String?
+  joinedAt  DateTime         @default(now())
+  leftAt    DateTime?
+  lastActive DateTime?
+  totalSales Int             @default(0)
+  sanctions  Int             @default(0)
+
+  owner Owner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, discordId])
+  @@index([ownerId])
+  @@index([discordId])
+  @@index([status])
+  @@schema("licenses")
+}
+
+model OwnerScoreEvent {
+  id        String         @id @default(cuid())
+  ownerId   String
+  type      ScoreEventType
+  points    Int
+  reason    String?
+  memberId  String?
+  createdAt DateTime       @default(now())
+
+  owner Owner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@index([createdAt])
+  @@schema("licenses")
+}
+
+model OwnerGoal {
+  id          String     @id @default(cuid())
+  ownerId     String
+  period      GoalPeriod
+  description String
+  metric      String?    // Auto-incrément automation: TEAM_VOUCH | TICKET | RATING | ACTIVE_MEMBERS
+  target      Int
+  current     Int        @default(0)
+  completed   Boolean    @default(false)
+  startsAt    DateTime
+  endsAt      DateTime
+  createdAt   DateTime   @default(now())
+
+  owner Owner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@index([endsAt])
+  @@index([metric])
+  @@schema("licenses")
+}
+
+// ═══════════════════════════════════════
+// YOURAZZ AUTOMATION CORE (ingestion logs)
+// ═══════════════════════════════════════
+
+// Anti-doublon : 1 ligne par message Discord traité.
+model ProcessedEvent {
+  id               String   @id @default(cuid())
+  discordMessageId String   @unique
+  sourceChannelId  String
+  eventType        String   // VOUCH | FEEDBACK | TICKET_CLOSED | TICKET_CLAIMED | UNKNOWN
+  externalEventId  String?  // vouchId / ticketId si dispo
+  hash             String
+  status           String   @default("processed") // processed | incomplete | error | duplicate
+  errorMessage     String?
+  processedAt      DateTime @default(now())
+
+  @@index([hash])
+  @@index([eventType])
+  @@index([externalEventId])
+  @@index([sourceChannelId])
+  @@schema("licenses")
+}
+
+// Stats par vendeur (clé = Discord user id).
+model SellerProfile {
+  id             String    @id @default(cuid())
+  discordUserId  String    @unique
+  username       String
+  ownerId        String?   // Owner.id rattaché (déduit), nullable
+  rank           String?
+  totalVouches   Int       @default(0)
+  weeklyVouches  Int       @default(0)
+  monthlyVouches Int       @default(0)
+  totalRatings   Int       @default(0)
+  ratingSum      Int       @default(0) // pour recalcul fiable de la moyenne
+  averageRating  Float     @default(0)
+  ticketsHandled Int       @default(0)
+  lastActivityAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([ownerId])
+  @@schema("licenses")
+}
+
+model VouchEvent {
+  id        String   @id @default(cuid())
+  messageId String   @unique
+  vouchId   String?
+  sellerId  String   // Discord id du Receiver (vendeur)
+  clientId  String?  // Discord id du Sender (client)
+  comment   String?
+  createdAt DateTime @default(now())
+
+  @@index([sellerId])
+  @@index([vouchId])
+  @@schema("licenses")
+}
+
+model FeedbackEvent {
+  id        String   @id @default(cuid())
+  messageId String   @unique
+  sellerId  String   // Discord id du Staff noté
+  clientId  String?
+  rating    Int
+  comment   String?
+  ticketId  String?
+  createdAt DateTime @default(now())
+
+  @@index([sellerId])
+  @@schema("licenses")
+}
+
+model TicketEvent {
+  id        String   @id @default(cuid())
+  messageId String   @unique
+  ticketId  String?
+  sellerId  String?  // staff qui a claim/close
+  eventType String   // CLOSED | CLAIMED
+  createdAt DateTime @default(now())
+
+  @@index([sellerId])
+  @@index([ticketId])
+  @@schema("licenses")
+}
+
+// Cache agrégat par Owner (alimenté en Phase 2).
+model OwnerStats {
+  id                 String   @id @default(cuid())
+  ownerId            String   @unique
+  totalTeamVouches   Int      @default(0)
+  weeklyTeamVouches  Int      @default(0)
+  monthlyTeamVouches Int      @default(0)
+  averageTeamRating  Float    @default(0)
+  activeMembers      Int      @default(0)
+  inactiveMembers    Int      @default(0)
+  ticketsHandled     Int      @default(0)
+  qualityScore       Int      @default(0)
+  updatedAt          DateTime @updatedAt
+
+  owner Owner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@schema("licenses")
+}
+
+model OwnerAlert {
+  id        String   @id @default(cuid())
+  ownerId   String
+  memberId  String?
+  type      String
+  message   String
+  severity  String   @default("info") // info | warning | critical
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  owner Owner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@index([resolved])
+  @@schema("licenses")
+}

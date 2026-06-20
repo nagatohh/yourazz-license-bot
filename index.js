@@ -1,1 +1,2 @@
-require("./dist/index.js");
+require("tsx/cjs");
+require("./src/index.ts");

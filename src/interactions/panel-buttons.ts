@@ -13,6 +13,7 @@ import {
 } from "discord.js";
 import { PLANS } from "../config/licenses";
 import { BRANDING, THEME, EMOJI } from "../config/branding";
+import { env } from "../config/bot";
 import { StripeService } from "../modules/payments/stripe.service";
 import { LicenseService } from "../modules/licenses/license.service";
 import { UserService } from "../modules/users/user.service";
@@ -24,6 +25,7 @@ export async function handlePanelButton(interaction: ButtonInteraction) {
   const id = interaction.customId;
 
   if (id === "yrz_panel_payment") return handlePayment(interaction);
+  if (id === "yrz_panel_crypto") return handleCrypto(interaction);
   if (id === "yrz_panel_dashboard") return handleDashboard(interaction);
   if (id === "yrz_panel_language") return handleLanguage(interaction);
   if (id === "yrz_panel_help") return handleHelp(interaction);
@@ -84,6 +86,64 @@ async function handlePayment(interaction: ButtonInteraction) {
     .setStyle(ButtonStyle.Success);
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(payBtn, confirmBtn);
+
+  await interaction.editReply(buildReply([container], [row]));
+}
+
+async function handleCrypto(interaction: ButtonInteraction) {
+  await interaction.deferReply({ ephemeral: true });
+
+  const wallets: string[] = [];
+  if (env.CRYPTO_WALLET_LTC) wallets.push(`**LTC :** \`${env.CRYPTO_WALLET_LTC}\``);
+  if (env.CRYPTO_WALLET_BTC) wallets.push(`**BTC :** \`${env.CRYPTO_WALLET_BTC}\``);
+  if (env.CRYPTO_WALLET_ETH) wallets.push(`**ETH :** \`${env.CRYPTO_WALLET_ETH}\``);
+
+  if (wallets.length === 0) {
+    const container = new ContainerBuilder()
+      .setAccentColor(ACCENT.warning)
+      .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ₿ Paiement Crypto`))
+      .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
+      .addTextDisplayComponents(
+        new TextDisplayBuilder().setContent("Le paiement crypto n'est pas encore configuré.\nContactez un administrateur."),
+      );
+    return interaction.editReply(buildReply([container]));
+  }
+
+  const container = new ContainerBuilder()
+    .setAccentColor(ACCENT.primary)
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## ₿ Paiement Crypto — Licence Vendeur`))
+    .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
+    .addTextDisplayComponents(
+      new TextDisplayBuilder().setContent(
+        `${EMOJI.fire} **Offre Vendeur** — 25€ (équivalent crypto)\n\n` +
+        `### 📋 Étapes :\n` +
+        `**1.** Envoyez l'équivalent de **25€** à l'une des adresses ci-dessous\n` +
+        `**2.** Envoyez une capture de la transaction à un admin\n` +
+        `**3.** Un admin vous fournira une **clé d'activation**\n` +
+        `**4.** Utilisez \`/key redeem <clé>\` ou le bouton 🔑 pour activer\n\n` +
+        `### 💰 Adresses wallet :\n` +
+        wallets.join("\n") +
+        `\n\n### ⚠️ Important :\n` +
+        `▸ Envoyez le montant **exact** en équivalent EUR\n` +
+        `▸ Conservez votre preuve de transaction\n` +
+        `▸ La clé sera fournie après vérification par un admin`,
+      ),
+    )
+    .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent(`-# ${BRANDING.footer}`));
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setCustomId("yrz_redeem_key")
+      .setLabel("Activer une clé")
+      .setEmoji("🔑")
+      .setStyle(ButtonStyle.Success),
+    new ButtonBuilder()
+      .setCustomId("yrz_panel_support")
+      .setLabel("Contacter un admin")
+      .setEmoji("📩")
+      .setStyle(ButtonStyle.Secondary),
+  );
 
   await interaction.editReply(buildReply([container], [row]));
 }

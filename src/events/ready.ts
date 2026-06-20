@@ -2,6 +2,9 @@ import { Client, ActivityType } from "discord.js";
 import { startExpirationJob } from "../modules/licenses/expiration.job";
 import { startWebhookServer, setClient } from "../webhook/server";
 import { startStripePoller } from "../modules/payments/stripe-poller";
+import { startOwnerJobs } from "../modules/owners/owner.job";
+import { OwnerSetupService } from "../modules/owners/owner-setup.service";
+import { OwnerLeaderboardService } from "../modules/owners/owner-leaderboard.service";
 import { logger } from "../utils/logger";
 
 export function onReady(client: Client) {
@@ -15,6 +18,13 @@ export function onReady(client: Client) {
     startWebhookServer();
     startExpirationJob(client);
     startStripePoller(client);
+    startOwnerJobs(client);
+
+    OwnerSetupService.getConfig().then((config) => {
+      if (config?.leaderboardChannelId) {
+        OwnerLeaderboardService.setChannel(config.leaderboardChannelId);
+      }
+    });
 
     console.log(`
   ╔══════════════════════════════════════════╗

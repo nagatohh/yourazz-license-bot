@@ -11,6 +11,8 @@ const LIMITS = {
     "licence aide": 5,
     "key redeem": 15,
     "key status": 5,
+    "owner addmember": 5,
+    "owner removemember": 5,
     default: 3,
 };
 function checkCooldown(userId, command) {

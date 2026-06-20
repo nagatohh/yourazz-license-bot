@@ -5,6 +5,9 @@ const discord_js_1 = require("discord.js");
 const expiration_job_1 = require("../modules/licenses/expiration.job");
 const server_1 = require("../webhook/server");
 const stripe_poller_1 = require("../modules/payments/stripe-poller");
+const owner_job_1 = require("../modules/owners/owner.job");
+const owner_setup_service_1 = require("../modules/owners/owner-setup.service");
+const owner_leaderboard_service_1 = require("../modules/owners/owner-leaderboard.service");
 const logger_1 = require("../utils/logger");
 function onReady(client) {
     client.once("ready", () => {
@@ -15,6 +18,12 @@ function onReady(client) {
         (0, server_1.startWebhookServer)();
         (0, expiration_job_1.startExpirationJob)(client);
         (0, stripe_poller_1.startStripePoller)(client);
+        (0, owner_job_1.startOwnerJobs)(client);
+        owner_setup_service_1.OwnerSetupService.getConfig().then((config) => {
+            if (config?.leaderboardChannelId) {
+                owner_leaderboard_service_1.OwnerLeaderboardService.setChannel(config.leaderboardChannelId);
+            }
+        });
         console.log(`
   ╔══════════════════════════════════════════╗
   ║  🏷️  YOURAZZ LICENSE MANAGER — ONLINE   ║

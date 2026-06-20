@@ -15,6 +15,27 @@ const envSchema = z.object({
   STAFF_LOG_CHANNEL_ID: z.string().default(""),
   LICENSE_LOG_CHANNEL_ID: z.string().default(""),
   OPENAI_API_KEY: z.string().optional(),
+  CRYPTO_WALLET_LTC: z.string().default(""),
+  CRYPTO_WALLET_BTC: z.string().default(""),
+  CRYPTO_WALLET_ETH: z.string().default(""),
+
+  // ── Automation Core : salons surveillés (lecture seule) ──
+  VOUCH_CHANNEL_ID: z.string().default(""),
+  FEEDBACK_STAFF_CHANNEL_ID: z.string().default(""),
+  TICKET_LOG_CHANNEL_ID: z.string().default(""),
+  RANKS_CHANNEL_ID: z.string().default(""),
+  OBJECTIVES_CHANNEL_ID: z.string().default(""),
+
+  // ── Automation Core : salons de sortie ──
+  OWNER_LOG_CHANNEL_ID: z.string().default(""),
+  OWNER_ALERT_CHANNEL_ID: z.string().default(""),
+  OWNER_DASHBOARD_CHANNEL_ID: z.string().default(""),
+  LEADERBOARD_OWNER_CHANNEL_ID: z.string().default(""),
+  LEADERBOARD_TEAM_CHANNEL_ID: z.string().default(""),
+  LEADERBOARD_STAFF_CHANNEL_ID: z.string().default(""),
+
+  // ── Rôles ──
+  MANAGER_ROLE_ID: z.string().default(""),
 });
 
 export const env = envSchema.parse(process.env);

@@ -5,9 +5,13 @@ const key_service_1 = require("../modules/licenses/key.service");
 const user_service_1 = require("../modules/users/user.service");
 const role_service_1 = require("../modules/admin/role.service");
 const cv2_1 = require("../utils/cv2");
+const owner_team_1 = require("./owner-team");
 async function handleModal(interaction) {
     if (interaction.customId === "yrz_redeem_modal") {
         return handleRedeemModal(interaction);
+    }
+    if (interaction.customId === "yrz_owner_addmember_modal") {
+        return (0, owner_team_1.handleAddMemberModal)(interaction);
     }
 }
 async function handleRedeemModal(interaction) {

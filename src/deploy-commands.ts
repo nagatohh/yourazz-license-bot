@@ -5,6 +5,9 @@ import * as key from "./commands/key";
 import * as admin from "./commands/admin";
 import * as ia from "./commands/ia";
 import * as panel from "./commands/panel";
+import * as owner from "./commands/owner";
+import * as ownerAdmin from "./commands/owner-admin";
+import * as automation from "./commands/automation-admin";
 
 const rest = new REST({ version: "10" }).setToken(env.DISCORD_TOKEN);
 
@@ -14,6 +17,9 @@ const commands = [
   admin.data.toJSON(),
   ia.data.toJSON(),
   panel.data.toJSON(),
+  owner.data.toJSON(),
+  ownerAdmin.data.toJSON(),
+  automation.data.toJSON(),
 ];
 
 (async () => {
