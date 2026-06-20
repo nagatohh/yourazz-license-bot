@@ -42,11 +42,20 @@ export class VouchParserService {
 
     const vouchId = text.match(/Vouch\s*ID\s*:?\s*#?(\d+)/i)?.[1] ?? null;
 
-    // Client = bloc Sender (From) ; Vendeur = bloc Receiver (To).
-    const clientId = EmbedReaderService.idAfterLabel(text, "Sender", "Receiver");
-    const sellerId = EmbedReaderService.idAfterLabel(text, "Receiver");
-    const clientUsername = EmbedReaderService.usernameAfterLabel(text, "Sender", "Receiver");
-    const sellerUsername = EmbedReaderService.usernameAfterLabel(text, "Receiver");
+    // Client = bloc Sender/From ; Vendeur = bloc Receiver/To.
+    // Deux formats possibles : "Sender (From)" / "Receiver (To)" OU juste "From" / "To".
+    const clientId =
+      EmbedReaderService.idAfterLabel(text, "Sender", "Receiver") ??
+      EmbedReaderService.idAfterLabel(text, "From", "To");
+    const sellerId =
+      EmbedReaderService.idAfterLabel(text, "Receiver") ??
+      EmbedReaderService.idAfterLabel(text, "To");
+    const clientUsername =
+      EmbedReaderService.usernameAfterLabel(text, "Sender", "Receiver") ??
+      EmbedReaderService.usernameAfterLabel(text, "From", "To");
+    const sellerUsername =
+      EmbedReaderService.usernameAfterLabel(text, "Receiver") ??
+      EmbedReaderService.usernameAfterLabel(text, "To");
 
     // Le commentaire est souvent en blockquote cité : `Comment\n> "..."`.
     const comment =
