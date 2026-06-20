@@ -42,7 +42,13 @@ class VouchParserService {
         const sellerId = embed_reader_service_1.EmbedReaderService.idAfterLabel(text, "Receiver");
         const clientUsername = embed_reader_service_1.EmbedReaderService.usernameAfterLabel(text, "Sender", "Receiver");
         const sellerUsername = embed_reader_service_1.EmbedReaderService.usernameAfterLabel(text, "Receiver");
-        const comment = text.match(/Comment\s*:?\s*\n?\s*["“]?([^\n"”]+)["”]?/i)?.[1]?.trim() ?? null;
+        // Le commentaire est souvent en blockquote cité : `Comment\n> "..."`.
+        const comment = text.match(/Comment[\s\S]*?["“]([^"”\n]+)["”]/i)?.[1]?.trim() ??
+            text
+                .match(/Comment\s*:?\s*\n+\s*>?\s*([^\n]+)/i)?.[1]
+                ?.replace(/^["“]|["”]$/g, "")
+                .trim() ??
+            null;
         const time = text.match(/Time\s*:?\s*([^\n]+)/i)?.[1]?.trim() ?? null;
         const saleChannel = text.match(/Channel\s*:?\s*#?\s*([^\s\n]+)/i)?.[1]?.trim() ?? null;
         const candidate = {

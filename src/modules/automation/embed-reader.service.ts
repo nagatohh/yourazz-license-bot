@@ -22,14 +22,33 @@ export class EmbedReaderService {
     return parts.join("\n");
   }
 
-  /** Texte complet d'un message : content + tous les embeds aplatis. */
+  /**
+   * Récupère récursivement le texte des Text Display (Components V2).
+   * Le bot externe Yourazz poste en containers/text displays (flags 32768),
+   * pas en embeds → le texte vit dans `message.components`, pas `message.embeds`.
+   * Gère les instances discord.js (`.content`/`.components`) ET le brut (`.data.*`).
+   */
+  static collectComponentText(components: any[]): string[] {
+    const out: string[] = [];
+    for (const c of components ?? []) {
+      const content = c?.content ?? c?.data?.content;
+      if (typeof content === "string" && content.length) out.push(content);
+      const children = c?.components ?? c?.data?.components;
+      if (Array.isArray(children)) out.push(...this.collectComponentText(children));
+    }
+    return out;
+  }
+
+  /** Texte complet d'un message : content + embeds + Components V2, markdown nettoyé. */
   static flattenMessage(message: Message): string {
     const parts: string[] = [];
     if (message.content) parts.push(message.content);
     for (const embed of message.embeds ?? []) {
       parts.push(this.flattenEmbed(embed));
     }
-    return parts.join("\n");
+    parts.push(...this.collectComponentText((message.components as any[]) ?? []));
+    // Nettoie le markdown pour des regex fiables (**gras**, `code`).
+    return parts.join("\n").replace(/\*+/g, "").replace(/`/g, "");
   }
 
   /** Métadonnées utiles présentes dans un embed (timestamp brut, premier titre). */

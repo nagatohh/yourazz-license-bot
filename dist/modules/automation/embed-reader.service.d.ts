@@ -10,7 +10,14 @@ import { Message, Embed } from "discord.js";
 export declare class EmbedReaderService {
     /** Concatène le texte d'un embed (title, description, fields, footer, author). */
     static flattenEmbed(embed: Embed): string;
-    /** Texte complet d'un message : content + tous les embeds aplatis. */
+    /**
+     * Récupère récursivement le texte des Text Display (Components V2).
+     * Le bot externe Yourazz poste en containers/text displays (flags 32768),
+     * pas en embeds → le texte vit dans `message.components`, pas `message.embeds`.
+     * Gère les instances discord.js (`.content`/`.components`) ET le brut (`.data.*`).
+     */
+    static collectComponentText(components: any[]): string[];
+    /** Texte complet d'un message : content + embeds + Components V2, markdown nettoyé. */
     static flattenMessage(message: Message): string;
     /** Métadonnées utiles présentes dans un embed (timestamp brut, premier titre). */
     static meta(message: Message): {
