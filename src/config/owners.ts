@@ -5,6 +5,11 @@ export const OWNER_SCORE = {
   MEMBER_SALE: 75,
   MEMBER_SANCTIONED: -100,
   MEMBER_LEFT: -150,
+  // Phase 2 — Automation Core
+  TEAM_VOUCH: 10,
+  GOOD_RATING: 5,
+  BAD_RATING: -15,
+  TICKET_HANDLED: 5,
 } as const;
 
 export const OWNER_TIERS = [

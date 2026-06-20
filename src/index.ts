@@ -3,6 +3,7 @@ import { env } from "./config/bot";
 import { onReady } from "./events/ready";
 import { onInteraction } from "./events/interaction";
 import { onMessage } from "./events/message";
+import { OwnerBridgeService } from "./modules/automation/owner-bridge.service";
 import { prisma } from "./services/database";
 import { logger } from "./utils/logger";
 
@@ -21,6 +22,7 @@ const client = new Client({
 onReady(client);
 onInteraction(client);
 onMessage(client);
+OwnerBridgeService.init();
 
 async function start() {
   try {

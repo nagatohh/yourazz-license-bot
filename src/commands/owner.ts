@@ -8,6 +8,7 @@ import {
 } from "discord.js";
 import { OwnerService } from "../modules/owners/owner.service";
 import { OwnerGoalsService } from "../modules/owners/owner-goals.service";
+import { prisma } from "../services/database";
 import { buildReply, errorCard, ACCENT } from "../utils/cv2";
 import { THEME } from "../config/branding";
 import { OWNER_SCORE } from "../config/owners";
@@ -56,6 +57,7 @@ async function handleDashboard(interaction: ChatInputCommandInteraction, owner: 
   const leaderboard = await OwnerService.getLeaderboard();
   const rank = leaderboard.findIndex((o) => o.id === owner.id) + 1;
   const goals = await OwnerGoalsService.getActiveGoals(owner.id);
+  const ownerStats = await prisma.ownerStats.findUnique({ where: { ownerId: owner.id } });
 
   const monthlyGoals = goals.filter((g) => g.period === "MONTHLY");
   const goalProgress = monthlyGoals.length > 0
@@ -78,7 +80,14 @@ async function handleDashboard(interaction: ChatInputCommandInteraction, owner: 
         `**Score :** ${owner.totalScore} pts\n` +
         `**Classement :** #${rank || "—"}\n` +
         `**Tier :** ${tierInfo.emoji} ${tierInfo.label}` +
-        (nextTier ? ` → ${nextTier.emoji} ${nextTier.label} (${nextTier.minRecruits} recrues)` : " *(max)*"),
+        (nextTier ? ` → ${nextTier.emoji} ${nextTier.label} (${nextTier.minRecruits} recrues)` : " *(max)*") +
+        (ownerStats
+          ? `\n\n### 📊 Stats Automation\n` +
+            `💬 Vouches semaine : **${ownerStats.weeklyTeamVouches}** (total: ${ownerStats.totalTeamVouches})\n` +
+            `⭐ Note moyenne équipe : **${ownerStats.averageTeamRating}/5**\n` +
+            `🎫 Tickets traités : **${ownerStats.ticketsHandled}**\n` +
+            `🏅 Score qualité : **${ownerStats.qualityScore}/100**`
+          : ""),
       ),
     )
     .addSeparatorComponents(

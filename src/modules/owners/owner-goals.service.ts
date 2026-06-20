@@ -43,6 +43,55 @@ export class OwnerGoalsService {
     });
   }
 
+  /** Crée les objectifs hebdo automatiques (Automation Phase 2). */
+  static async createWeeklyAutoGoals(ownerId: string) {
+    const now = new Date();
+    const day = now.getDay();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
+    monday.setHours(0, 0, 0, 0);
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59);
+
+    const existing = await prisma.ownerGoal.findFirst({
+      where: { ownerId, metric: "TEAM_VOUCH", period: "WEEKLY", startsAt: { gte: monday } },
+    });
+    if (existing) return;
+
+    await prisma.ownerGoal.createMany({
+      data: [
+        {
+          ownerId,
+          period: "WEEKLY",
+          description: "300 vouches équipe cette semaine",
+          metric: "TEAM_VOUCH",
+          target: 300,
+          startsAt: monday,
+          endsAt: sunday,
+        },
+        {
+          ownerId,
+          period: "WEEKLY",
+          description: "50 tickets traités cette semaine",
+          metric: "TICKET",
+          target: 50,
+          startsAt: monday,
+          endsAt: sunday,
+        },
+        {
+          ownerId,
+          period: "WEEKLY",
+          description: "Note moyenne minimum 4.7",
+          metric: "RATING",
+          target: 10,
+          startsAt: monday,
+          endsAt: sunday,
+        },
+      ],
+    });
+  }
+
   static async createWeeklyGoals(ownerId: string) {
     const now = new Date();
     const day = now.getDay();
