@@ -189,19 +189,37 @@ export class AutomationCoreService {
     }
 
     const existing = await prisma.ticketEvent.findUnique({ where: { messageId: message.id } });
-    if (!existing) {
-      await prisma.ticketEvent.create({
-        data: {
-          messageId: message.id,
-          ticketId: parsed.ticketId,
-          sellerId: parsed.sellerId,
-          eventType: parsed.eventType,
-        },
+    if (existing) return; // déjà traité
+
+    // Déduplique par ticketId+sellerId (le bot externe poste 2 msgs par fermeture : FR + EN).
+    if (parsed.ticketId && parsed.sellerId) {
+      const dup = await prisma.ticketEvent.findFirst({
+        where: { ticketId: parsed.ticketId, sellerId: parsed.sellerId, eventType: parsed.eventType },
       });
-      if (parsed.eventType === "CLOSED" && parsed.sellerId) {
-        await SellerStatsService.addTicket(parsed.sellerId, parsed.sellerUsername ?? undefined);
-        automationBus.emitEvent(AUTOMATION_EVENTS.TICKET_CLOSED_DETECTED, { sellerId: parsed.sellerId });
+      if (dup) {
+        await AntiDuplicateService.record({
+          discordMessageId: message.id,
+          sourceChannelId: message.channelId,
+          eventType: "TICKET_DUPLICATE",
+          externalEventId: parsed.ticketId,
+          hash,
+          status: "duplicate",
+        });
+        return;
       }
+    }
+
+    await prisma.ticketEvent.create({
+      data: {
+        messageId: message.id,
+        ticketId: parsed.ticketId,
+        sellerId: parsed.sellerId,
+        eventType: parsed.eventType,
+      },
+    });
+    if (parsed.eventType === "CLOSED" && parsed.sellerId) {
+      await SellerStatsService.addTicket(parsed.sellerId, parsed.sellerUsername ?? undefined);
+      automationBus.emitEvent(AUTOMATION_EVENTS.TICKET_CLOSED_DETECTED, { sellerId: parsed.sellerId });
     }
 
     await AntiDuplicateService.record({
