@@ -181,7 +181,12 @@ export class AutomationCoreService {
   // ── TICKET (ossature) ──────────────────────────────────
   private static async processTicket(message: Message, hash: string) {
     const parsed = TicketParserService.parse(message);
-    if (!parsed) return this.markIncomplete(message, "TICKET", hash);
+    // Si le parser renvoie null ET que c'est un profit → ignorer silencieusement.
+    if (!parsed) {
+      const text = EmbedReaderService.flattenMessage(message);
+      if (/profit\s*enregistr/i.test(text)) return; // pas un ticket, pas d'alerte
+      return this.markIncomplete(message, "TICKET", hash);
+    }
 
     const existing = await prisma.ticketEvent.findUnique({ where: { messageId: message.id } });
     if (!existing) {
